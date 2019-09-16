@@ -1,0 +1,312 @@
+!   Commands inserted into this file will be executed immediately after the ANSYS /POST1 command.
+
+!   Active UNIT system in Workbench when this object was created:  Metric (mm, t, N, s, mV, mA)
+!   NOTE:  Any data that requires units (such as mass) is assumed to be in the consistent solver unit system.
+!                See Solving Units in the help system for more information.
+
+ 
+ set,last
+ esel,none
+ esel,s,mat,,1
+ nsle,s,corner
+ 
+ *get,e_cou,ELEM,,count 
+ *get,n_cou,NODE,,count
+ *get,e_min,ELEM,,num,min
+ *get,n_min,NODE,,num,min
+ *get,n_max,NODE,,num,max 
+
+ *dim,e_nodes_mat,CHAR,e_cou,21
+ *dim, arg, char,1,6
+ *dim, result_name,char,1,6
+ arg(1,1)='S,EQV'
+ arg(1,2)='S,1'
+ arg(1,3)='U,SUM'
+ arg(1,4)='U,X'
+ arg(1,5)='U,Y'
+ arg(1,6)='U,Z'
+
+ *cfopen,my_results,txt
+ *do,j,1,6
+  *vwrite,j,arg(1,j)
+   ('*get,my_results(',F0.0,TL1,',j),NODE,n_j,',A8)
+ *enddo
+ *cfclos
+
+
+ *dim,e_nodes,,e_cou,20
+ *dim,e_nodes_count,,e_cou
+ *dim,e_types,,e_cou
+ *dim,e_types_name,,e_cou
+ *dim,e_types_VTK,,e_cou
+ *dim,node_id,,n_max
+ *dim,n_x,,n_max
+ *dim,n_y,,n_max
+ *dim,n_z,,n_max
+ *dim,my_results,,n_max,6
+ *dim,cell_str,STRING,1,e_cou
+ *dim,e_types_Ansys_to_VTK,,300
+ 
+ e_types_Ansys_to_VTK(5)=12     ! SOLID5 (3-D Coupled-Field Solid)
+ e_types_Ansys_to_VTK(11)=3     ! LINK11 (Linear Actuator)
+ e_types_Ansys_to_VTK(13)=9     ! PLANE13 (2-D Coupled-Field Solid)
+ e_types_Ansys_to_VTK(14)=3     ! COMBIN14 (Spring-Damper)
+ e_types_Ansys_to_VTK(21)=1     ! MASS21 (Structural Mass)
+ e_types_Ansys_to_VTK(25)=9     ! PLANE25 (Axisymmetric-Harmonic 4-Node Structural Solid)
+ e_types_Ansys_to_VTK(27)=3     ! MATRIX27 (Stiffness, Damping, or Mass Matrix)
+ e_types_Ansys_to_VTK(29)=9     ! FLUID29 (2-D Axisymmetric Harmonic Acoustic Fluid)
+ e_types_Ansys_to_VTK(30)=12    ! FLUID30 (3-D Acoustic Fluid)
+ e_types_Ansys_to_VTK(31)=3     ! LINK31 (Radiation Link)
+ e_types_Ansys_to_VTK(33)=3     ! LINK33 (3-D Conduction Bar)
+ e_types_Ansys_to_VTK(34)=3     ! LINK34 (Convection Link)
+ e_types_Ansys_to_VTK(35)=5     ! PLANE35 (2-D 6-Node Triangular Thermal Solid)
+ e_types_Ansys_to_VTK(36)=5     ! SOURC36 (Current Source)
+ e_types_Ansys_to_VTK(37)=4     ! COMBIN37 (Control)
+ e_types_Ansys_to_VTK(38)=3     ! FLUID38 (Dynamic Fluid Coupling)
+ e_types_Ansys_to_VTK(39)=3     ! COMBIN39 (Nonlinear Spring)
+ e_types_Ansys_to_VTK(40)=3     ! COMBIN40 (Combination)
+ e_types_Ansys_to_VTK(47)=9     ! INFIN47 (3-D Infinite Boundary)
+ e_types_Ansys_to_VTK(50)=-1000 ! MATRIX50 (Superelement (or Substructure))
+ e_types_Ansys_to_VTK(55)=9     ! PLANE55 (2-D Thermal Solid)
+ e_types_Ansys_to_VTK(61)=3     ! SHELL61 (Axisymmetric-Harmonic Structural Shell)
+ e_types_Ansys_to_VTK(65)=12    ! SOLID65 (3-D Reinforced Concrete Solid)
+ e_types_Ansys_to_VTK(68)=3     ! LINK68 (Coupled Thermal-Electric Line)
+ e_types_Ansys_to_VTK(70)=12    ! SOLID70 (3-D Thermal Solid)
+ e_types_Ansys_to_VTK(71)=1     ! MASS71 (Thermal Mass)
+ e_types_Ansys_to_VTK(75)=9     ! PLANE75 (Axisymmetric-Harmonic 4-Node Thermal Solid)
+ e_types_Ansys_to_VTK(77)=9     ! PLANE77 (2-D 8-Node Thermal Solid)
+ e_types_Ansys_to_VTK(78)=9     ! PLANE78 (Axisymmetric-Harmonic 8-Node Thermal Solid)
+ e_types_Ansys_to_VTK(83)=9     ! PLANE83 (Axisymmetric-Harmonic 8-Node Structural Solid)
+ e_types_Ansys_to_VTK(87)=10    ! SOLID87 (3-D 10-Node Tetrahedral Thermal Solid)
+ e_types_Ansys_to_VTK(90)=12    ! SOLID90 (3-D 20-Node Thermal Solid)
+ e_types_Ansys_to_VTK(94)=4     ! CIRCU94 (Piezoelectric Circuit)
+ e_types_Ansys_to_VTK(96)=12    ! SOLID96 (3-D Magnetic Scalar Solid)
+ e_types_Ansys_to_VTK(98)=10    ! SOLID98 (Tetrahedral Coupled-Field Solid)
+ e_types_Ansys_to_VTK(110)=9    ! INFIN110 (2-D Infinite Solid)
+ e_types_Ansys_to_VTK(111)=12   ! INFIN111 (3-D Infinite Solid)
+ e_types_Ansys_to_VTK(116)=3    ! FLUID116 (Coupled Thermal-Fluid Pipe)
+ e_types_Ansys_to_VTK(121)=9    ! PLANE121 (2-D 8-Node Electrostatic Solid)
+ e_types_Ansys_to_VTK(122)=12   ! SOLID122 (3-D 20-Node Electrostatic Solid)
+ e_types_Ansys_to_VTK(123)=10   ! SOLID123 (3-D 10-Node Tetrahedral Electrostatic Solid)
+ e_types_Ansys_to_VTK(124)=4    ! CIRCU124 (Electric Circuit)
+ e_types_Ansys_to_VTK(125)=4    ! CIRCU125 (Diode)
+ e_types_Ansys_to_VTK(126)=3    ! TRANS126 (Electromechanical Transducer)
+ e_types_Ansys_to_VTK(129)=3    ! FLUID129 (2-D Infinite Acoustic)
+ e_types_Ansys_to_VTK(130)=9    ! FLUID130 (3-D Infinite Acoustic)
+ e_types_Ansys_to_VTK(131)=9    ! SHELL131 (4-Node Thermal Shell)
+ e_types_Ansys_to_VTK(132)=9    ! SHELL132 (8-Node Thermal Shell)
+ e_types_Ansys_to_VTK(136)=9    ! FLUID136 (3-D Squeeze Film Fluid Element)
+ e_types_Ansys_to_VTK(138)=3    ! FLUID138 (3-D Viscous Fluid Link Element)
+ e_types_Ansys_to_VTK(139)=4    ! FLUID139 (3-D Slide Film Fluid Element)
+ e_types_Ansys_to_VTK(144)=4    ! ROM144 (Reduced Order Electrostatic-Structural)
+ e_types_Ansys_to_VTK(151)=3    ! SURF151 (2-D Thermal Surface Effect)
+ e_types_Ansys_to_VTK(152)=9    ! SURF152 (3-D Thermal Surface Effect)
+ e_types_Ansys_to_VTK(153)=3    ! SURF153 (2-D Structural Surface Effect)
+ e_types_Ansys_to_VTK(154)=9    ! SURF154 (3-D Structural Surface Effect)
+ e_types_Ansys_to_VTK(155)=3    ! SURF155 (3-D Thermal Surface Effect)
+ e_types_Ansys_to_VTK(156)=3    ! SURF156 (3-D Structural Surface Line Load Effect)
+ e_types_Ansys_to_VTK(157)=9    ! SHELL157 (Thermal-Electric Shell)
+ e_types_Ansys_to_VTK(159)=-1000! SURF159 (General Axisymmetric Surface)
+ e_types_Ansys_to_VTK(160)=5    ! LINK160 (Explicit 3-D Spar (or Truss))
+ e_types_Ansys_to_VTK(161)=5    ! BEAM161 (Explicit 3-D Beam)
+ e_types_Ansys_to_VTK(162)=9    ! PLANE162 (Explicit 2-D Structural Solid)
+ e_types_Ansys_to_VTK(163)=9    ! SHELL163 (Explicit Thin Structural Shell)
+ e_types_Ansys_to_VTK(164)=12   ! SOLID164 (Explicit 3-D Structural Solid)
+ e_types_Ansys_to_VTK(165)=3    ! COMBI165 (Explicit Spring-Damper)
+ e_types_Ansys_to_VTK(166)=1    ! MASS166 (Explicit 3-D Structural Mass)
+ e_types_Ansys_to_VTK(167)=5    ! LINK167 (Explicit Tension-Only Spar)
+ e_types_Ansys_to_VTK(168)=10   ! SOLID168 (Explicit 3-D 10-Node Tetrahedral Structural Solid)
+ e_types_Ansys_to_VTK(169)=3    ! TARGE169 (2-D Target Segment)
+ e_types_Ansys_to_VTK(170)=9    ! TARGE170 (3-D Target Segment)
+ e_types_Ansys_to_VTK(171)=3    ! CONTA171 (2-D 2-Node Surface-to-Surface Contact)
+ e_types_Ansys_to_VTK(172)=3    ! CONTA172 (2-D 3-Node Surface-to-Surface Contact )
+ e_types_Ansys_to_VTK(173)=9    ! CONTA173 (3-D 4-Node Surface-to-Surface Contact)
+ e_types_Ansys_to_VTK(174)=9    ! CONTA174 (3-D 8-Node Surface-to-Surface Contact)
+ e_types_Ansys_to_VTK(175)=1    ! CONTA175 (2-D/3-D Node-to-Surface Contact)
+ e_types_Ansys_to_VTK(176)=3    ! CONTA176 (3-D Line-to-Line Contact)
+ e_types_Ansys_to_VTK(177)=3    ! CONTA177 (3-D Line-to-Surface Contact)
+ e_types_Ansys_to_VTK(178)=3    ! CONTA178 (3-D Node-to-Node Contact)
+ e_types_Ansys_to_VTK(179)=5    ! PRETS179 (Pretension)
+ e_types_Ansys_to_VTK(180)=3    ! LINK180 (3-D Spar (or Truss))
+ e_types_Ansys_to_VTK(181)=9    ! SHELL181 (4-Node Structural Shell)
+ e_types_Ansys_to_VTK(182)=9    ! PLANE182 (2-D 4-Node Structural Solid)
+ e_types_Ansys_to_VTK(183)=9    ! PLANE183 (2-D 8-Node or 6-Node Structural Solid)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184 (Multipoint Constraint Element)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Link/Beam (Multipoint Constraint Element: Rigid Link or Rigid Beam)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Slider (Multipoint Constraint Element: Slider)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Revolute (Multipoint Constraint Element: Revolute Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Universal (Multipoint Constraint Element: Universal Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Slot (Multipoint Constraint Element: Slot Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Point (Multipoint Constraint Element: Point-in-plane Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Translational (Multipoint Constraint Element: Translational Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Cylindrical (Multipoint Constraint Element: Cylindrical Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Planar (Multipoint Constraint Element: Planar Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Weld (Multipoint Constraint Element: Weld Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Orient (Multipoint Constraint Element: Orient Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Spherical (Multipoint Constraint Element: Spherical Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-General (Multipoint Constraint Element: General Joint)
+ e_types_Ansys_to_VTK(184)=4    ! MPC184-Screw (Multipoint Constraint Element: Screw Joint)
+ e_types_Ansys_to_VTK(185)=12   ! SOLID185 (3-D 8-Node Structural Solid)
+ e_types_Ansys_to_VTK(186)=12   ! SOLID186 (3-D 20-Node Structural Solid)
+ e_types_Ansys_to_VTK(187)=10   ! SOLID187 (3-D 10-Node Tetrahedral Structural Solid)
+ e_types_Ansys_to_VTK(188)=5    ! BEAM188 (3-D 2-Node Beam)
+ e_types_Ansys_to_VTK(189)=9    ! BEAM189 (3-D 3-Node Beam)
+ e_types_Ansys_to_VTK(190)=12   ! SOLSH190 (3-D 8-Node Structural Solid Shell)
+ e_types_Ansys_to_VTK(192)=9    ! INTER192 (2-D 4-Node Gasket)
+ e_types_Ansys_to_VTK(193)=9    ! INTER193 (2-D 6-Node Gasket)
+ e_types_Ansys_to_VTK(194)=12   ! INTER194 (3-D 16-Node Gasket)
+ e_types_Ansys_to_VTK(195)=12   ! INTER195 (3-D 8-Node Gasket)
+ e_types_Ansys_to_VTK(200)=-1000! MESH200 (Meshing Facet)
+ e_types_Ansys_to_VTK(201)=1    ! FOLLW201 (Follower Load)
+ e_types_Ansys_to_VTK(202)=9    ! INTER202 (2-D 4-Node Cohesive)
+ e_types_Ansys_to_VTK(203)=7    ! INTER203 (2-D 6-Node Cohesive)
+ e_types_Ansys_to_VTK(204)=-1000! INTER204 (3-D 16-Node Cohesive)
+ e_types_Ansys_to_VTK(205)=12   ! INTER205 (3-D 8-Node Cohesive)
+ e_types_Ansys_to_VTK(208)=3    ! SHELL208 (2-Node Axisymmetric Shell)
+ e_types_Ansys_to_VTK(209)=3    ! SHELL209 (3-Node Axisymmetric Shell)
+ e_types_Ansys_to_VTK(212)=9    ! CPT212 (2-D 4-Node Coupled Pore-Pressure Mechanical Solid)
+ e_types_Ansys_to_VTK(213)=9    ! CPT213 (2-D 8-Node Coupled Pore-Pressure Mechanical Solid)
+ e_types_Ansys_to_VTK(214)=3    ! COMBI214 (2-D Spring-Damper Bearing)
+ e_types_Ansys_to_VTK(215)=12   ! CPT215 (3-D 8-Node Coupled Pore-Pressure Mechanical Solid)
+ e_types_Ansys_to_VTK(216)=12   ! CPT216 (3-D 20-Node Coupled Pore-Pressure Mechanical Solid )
+ e_types_Ansys_to_VTK(217)=10   ! CPT217 (3-D 10-Node Coupled Pore-Pressure Mechanical Solid)
+ e_types_Ansys_to_VTK(218)=9    ! FLUID218 (3-D Hydrodynamic Bearing Element)
+ e_types_Ansys_to_VTK(220)=12   ! FLUID220 (3-D Acoustic Fluid 20-Node Solid Element)
+ e_types_Ansys_to_VTK(221)=10   ! FLUID221 (3-D Acoustic Fluid 10-Node Solid Element)
+ e_types_Ansys_to_VTK(223)=9    ! PLANE223 (2-D 8-Node Coupled-Field Solid)
+ e_types_Ansys_to_VTK(226)=12   ! SOLID226 (3-D 20-Node Coupled-Field Solid)
+ e_types_Ansys_to_VTK(227)=10   ! SOLID227 (3-D 10-Node Coupled-Field Solid)
+ e_types_Ansys_to_VTK(230)=9    ! PLANE230 (2-D 8-Node Electric Solid)
+ e_types_Ansys_to_VTK(231)=12   ! SOLID231 (3-D 20-Node Electric Solid)
+ e_types_Ansys_to_VTK(232)=10   ! SOLID232 (3-D 10-Node Tetrahedral Electric Solid)
+ e_types_Ansys_to_VTK(233)=9    ! PLANE233 (2-D 8-Node Electromagnetic Solid )
+ e_types_Ansys_to_VTK(236)=12   ! SOLID236 (3-D 20-Node Electromagnetic Solid)
+ e_types_Ansys_to_VTK(237)=10   ! SOLID237 (3-D 10-Node Electromagnetic Solid)
+ e_types_Ansys_to_VTK(238)=9    ! PLANE238 (2-D 8-Node Diffusion Solid)
+ e_types_Ansys_to_VTK(239)=12   ! SOLID239 (3-D 20-Node Diffusion Solid)
+ e_types_Ansys_to_VTK(240)=10   ! SOLID240 (3-D 10-Node Tetrahedral Diffusion Solid)
+ e_types_Ansys_to_VTK(241)=9    ! HSFLD241 (2-D Hydrostatic Fluid)
+ e_types_Ansys_to_VTK(242)=-1000! HSFLD242 (3-D Hydrostatic Fluid)
+ e_types_Ansys_to_VTK(251)=3    ! SURF251 (2-D Radiosity Surface)
+ e_types_Ansys_to_VTK(252)=9    ! SURF252 (3-D Radiosity Surface)
+ e_types_Ansys_to_VTK(257)=12   ! INFIN257 (Structural Infinite Solid)
+ e_types_Ansys_to_VTK(263)=9    ! REINF263 (2-D Smeared Reinforcing)
+ e_types_Ansys_to_VTK(264)=12   ! REINF264 (3-D Discrete Reinforcing)
+ e_types_Ansys_to_VTK(265)=-1000! REINF265 (3-D Smeared Reinforcing)
+ e_types_Ansys_to_VTK(272)=-1000! SOLID272 (General Axisymmetric Solid with 4 Base Nodes)
+ e_types_Ansys_to_VTK(273)=-1000! SOLID273 (General Axisymmetric Solid with 8 Base Nodes)
+ e_types_Ansys_to_VTK(278)=12   ! SOLID278 (3-D 8-Node Thermal Solid)
+ e_types_Ansys_to_VTK(279)=12   ! SOLID279 (3-D 20-Node Thermal Solid)
+ e_types_Ansys_to_VTK(281)=9    ! SHELL281 (8-Node Structural Shell)
+ e_types_Ansys_to_VTK(285)=10   ! SOLID285 (3-D 4-Node Tetrahedral Structural Solid with Nodal Pressures)
+ e_types_Ansys_to_VTK(288)=3    ! PIPE288 (3-D 2-Node Pipe)
+ e_types_Ansys_to_VTK(289)=3    ! PIPE289 (3-D 3-Node Pipe )
+ e_types_Ansys_to_VTK(290)=3    ! ELBOW290 (3-D 3-Node Elbow)
+ e_types_Ansys_to_VTK(300)=-1000! USER300 (User-Defined Element) 
+
+ n_j=n_min
+ *do,j,1,n_cou
+ 	node_id(n_j)=j-1
+ 	n_x(j)=nx(n_j)
+ 	n_y(j)=ny(n_j)
+ 	n_z(j)=nz(n_j)
+ 	*get,my_results(j,1),NODE,n_j,S,EQV
+       *get,my_results(j,2),NODE,n_j,S,1
+       *get,my_results(j,4),NODE,n_j,U,X
+       *get,my_results(j,5),NODE,n_j,U,Y
+       *get,my_results(j,6),NODE,n_j,U,Z
+ 	n_j=ndnext(n_j)
+ *enddo
+ 
+
+
+ cells_size=0
+ e_i=e_min
+ *do,i,1,e_cou
+ 	cells_size=cells_size+1
+ 	e_nodes_count(i)=0
+ 	cellstr=''
+ 	*do,j,1,20
+ 		n_j=nelem(e_i,j)
+ 		*if,NSEL(n_j),NE,0.0,THEN
+  			e_nodes_count(i)=e_nodes_count(i)+1
+ 			e_nodes(i,j)=node_id(n_j)
+ 			e_nodes_mat(i,j+1)=CHRVAL(node_id(n_j))
+ 			cells_size=cells_size+1
+ 		*else
+ 			*exit
+ 		*endif
+ 	*enddo
+ 	e_nodes_mat(i,1)=CHRVAL(e_nodes_count(i))
+ 	*get,e_types(i),ELEM,e_i,ATTR,TYPE
+ 	*get,e_types_name(i),ETYP,e_types(i),ATTR,ENAM
+ 	e_types_VTK(i)=e_types_Ansys_to_VTK(e_types_name(i))
+ 	e_i=elnext(e_i) 
+ *enddo
+ 
+ *cfopen,output,vtk
+ 
+ *vwrite,
+ ('# vtk DataFile Version 2.0')
+ *vwrite,
+ ('Unstructured Grid')
+ *vwrite,
+ ('ASCII')
+ *vwrite,
+ ('DATASET UNSTRUCTURED_GRID')
+ *vwrite,n_cou
+ ('POINTS ',F0.0,TL1,' float')
+ 
+ *vwrite,n_x(1),n_y(1),n_z(1)
+ (1PE12.5,' ',1PE12.5,' '1PE12.5)
+ 
+ *vwrite,e_cou,cells_size
+ ('CELLS ',F0.0,TL1,' ',F0.0,TL1,' ')
+ 
+ *cfclose
+ 
+ 
+ /NOPR
+ /output,output,vtk,,append
+ *mwrite,e_nodes_mat(1,1)
+ (21(A8,' '))
+ /output
+ /GOPR
+ 
+ 
+ *cfopen,output,vtk,,APPEND
+ 
+ *vwrite,e_cou
+ ('CELL_TYPES ',F0.0,TL1,' ')
+ 
+ *vwrite,e_types_VTK(1)
+ (F0.0,TL1,' ')
+ 
+ *vwrite,n_cou
+ ('POINT_DATA ',F0.0,TL1,' ')
+ 
+ *vwrite,arg(1,1)
+ ('SCALARS ',A8,' float 1')
+ 
+ *vwrite
+ ('LOOKUP_TABLE default')
+ 
+ *do,k,1,n_cou
+  *vlen,1
+  *vcol,1
+  *vwrite,my_results(k,1)
+  (1PE12.5)
+ *enddo
+ 
+  *vwrite,
+ ('VECTORS velocity float')
+ 
+ *do,k,1,n_cou
+  *vlen,1
+  *vcol,1
+  *vwrite,my_results(k,4),my_results(k,5),my_results(k,6)
+  (1PE12.5,' ',1PE12.5,' ',1PE12.5)
+ *enddo 
+
+ *cfclose
+ 
